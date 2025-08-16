@@ -6,7 +6,7 @@ import { FileController } from './file/controller';
 
 @Module({
   imports: [HelloModule],
-  controllers: [AppController,FileController],
+  controllers: [AppController, FileController],
   providers: [AppService],
 })
 export class AppModule {}

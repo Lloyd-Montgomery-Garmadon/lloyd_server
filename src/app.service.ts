@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { Logger } from 'core';
+import { Log } from '../../lloyd_core/dist/log';
 
-const logger = new Logger({ tag: 'leo' });
+const log = new Log({ tag: 'lloyd_server' });
 
 @Injectable()
 export class AppService {
   getHello(): string {
-    logger.debug('qweewqew');
+    log.debug('AppService');
     return 'Hello World!';
   }
 }
+
+export default log;

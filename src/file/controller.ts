@@ -13,22 +13,25 @@ import {
   completeMultipartUpload,
   createClient,
   createMultipartUpload,
+  Env,
   getGetObjectPresignedUrl,
   getPartSignedUrl,
   getPutObjectPresignedUrl,
   uploadMultipartBuffer,
   uploadPart,
-} from '../../../core';
+} from '../../../lloyd_core';
 import { IsString } from 'class-validator';
 
+const env = new Env('../../env/oss.json');
+
 const client = createClient({
-  endpoint: 'http://192.168.92.128:9000',
-  region: 'us-east-1',
-  accessKey: 'testaccesskey',
-  secretKey: '12345678',
-  forcePathStyle: true,
-  connectionTimeout: 30000,
-  requestTimeout: 30000,
+  endpoint: env.get('localOSSAddress'),
+  region: env.get('region'),
+  accessKey: env.get('accessKey'),
+  secretKey: env.get('secretKey'),
+  forcePathStyle: env.getBoolean('forcePathStyle'),
+  connectionTimeout: env.getNumber('connectionTimeout'),
+  requestTimeout: env.getNumber('requestTimeout'),
 });
 
 export class UploadDto {
