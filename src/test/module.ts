@@ -1,16 +1,11 @@
 import {
   Body,
-  CallHandler,
   Controller,
-  ExecutionContext,
   Get,
-  Injectable,
   Module,
-  NestInterceptor,
   Post,
   UseInterceptors,
 } from '@nestjs/common';
-import { catchError, Observable, of } from 'rxjs';
 import { IsNumber, IsString } from 'class-validator';
 /** ------------------ Module ------------------ */
 import { HelloController, LoggingInterceptor } from './controller';
@@ -24,31 +19,6 @@ export class CreateUserBody {
   age!: number;
 }
 
-/** ------------------ 拦截器 ------------------ */
-interface ErrorResponse {
-  success: false;
-  message: string | string[];
-}
-
-@Injectable()
-export class ResponseInterceptor<T = any>
-  implements NestInterceptor<T, T | ErrorResponse>
-{
-  intercept(
-    context: ExecutionContext,
-    next: CallHandler<T>,
-  ): Observable<T | ErrorResponse> {
-    return next.handle().pipe(
-      catchError((err: unknown): Observable<ErrorResponse> => {
-        let message: string | string[] = '内部服务器错误';
-        if (err instanceof Error) message = err.message;
-        if (Array.isArray(err)) message = err;
-        return of({ success: false, message });
-      }),
-    );
-  }
-}
-
 /** ------------------ 动态 Controller ------------------ */
 interface ControllerLogic {
   get?: () => any;
@@ -57,7 +27,7 @@ interface ControllerLogic {
 
 export function createController(path: string, logic: ControllerLogic) {
   @Controller(path)
-  @UseInterceptors(ResponseInterceptor, LoggingInterceptor)
+  @UseInterceptors(LoggingInterceptor)
   class DynamicController {
     @Get()
     get(): any {
@@ -96,6 +66,8 @@ const OrderController = createController('orders', {
 });
 
 @Module({
+  imports: [],
+  providers: [],
   controllers: [HelloController, UserController, OrderController],
 })
 export class HelloModule {}

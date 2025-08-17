@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Log } from '../../lloyd_core/dist/log';
+import { Log } from 'lloyd_core';
 
 const log = new Log({ tag: 'lloyd_server' });
 

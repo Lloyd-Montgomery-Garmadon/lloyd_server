@@ -4,13 +4,10 @@ import {
   Controller,
   ExecutionContext,
   Get,
-  HttpCode,
   Injectable,
   Ip,
   NestInterceptor,
   Param,
-  Post,
-  Query,
   Req,
 } from '@nestjs/common';
 import { map, Observable, tap } from 'rxjs';
@@ -65,25 +62,14 @@ export class CreateUserDto {
 @Controller('hello') // 路由前缀 /hello
 export class HelloController {
   @Get(':id/orders') // GET /hello/:id/orders
-  getUser(@Param('id') id: number, @Ip() ip: string, @Body() body: object) {
-    return { id, ip, body };
-  }
-
-  @Post('createUser')
-  @HttpCode(201)
-  createUser(
-    @Body() dto: CreateUserDto,
-    @Req() req: Request,
+  getUser(
+    @Req() request: Request,
+    @Param('id') id: number,
     @Ip() ip: string,
-    @Query() query: object,
+    @Body() body: object,
   ) {
-    // 调用 DTO 方法，类型安全
-    dto.sayHello();
-
-    // 打印请求头
-    console.log('Request Headers:', req.headers, ip, query);
-
-    // 返回结果
-    return [dto.toString(), dto];
+    // @ts-expect-error
+    console.log(request.cookies);
+    return { id, ip, body };
   }
 }
